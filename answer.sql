@@ -143,6 +143,142 @@ CREATE TABLE order_history (
 
 
 
+-- ===============================
+-- Lookup Tables
+-- ===============================
+INSERT INTO country (country_name) VALUES 
+  ('United States'), ('Canada'), ('United Kingdom');
+
+INSERT INTO address_status (status_name) VALUES 
+  ('current'), ('old');
+
+INSERT INTO book_language (language_name) VALUES 
+  ('English'), ('French'), ('Spanish');
+
+INSERT INTO publisher (name, contact_email) VALUES 
+  ('Penguin Random House', 'contact@penguin.com'),
+  ('HarperCollins', 'info@harpercollins.com');
+
+INSERT INTO shipping_method (method_name, cost) VALUES 
+  ('Standard Shipping', 5.00),
+  ('Express Shipping', 10.00);
+
+INSERT INTO order_status (status_name) VALUES 
+  ('Pending'), ('Shipped'), ('Delivered'), ('Cancelled');
+
+-- ===============================
+-- Authors and Books
+-- ===============================
+INSERT INTO author (first_name, last_name, bio) VALUES 
+  ('George', 'Orwell', 'English novelist and essayist'),
+  ('J.K.', 'Rowling', 'British author of the Harry Potter series');
+
+INSERT INTO book (title, publisher_id, language_id, isbn, publication_year, price, stock_quantity) VALUES 
+  ('1984', 1, 1, '9780451524935', 1949, 15.99, 50),
+  ('Harry Potter and the Philosopher''s Stone', 2, 1, '9780747532699', 1997, 29.99, 100);
+
+INSERT INTO book_author (book_id, author_id) VALUES 
+  (1, 1),
+  (2, 2);
+
+-- ===============================
+-- Customers & Addresses
+-- ===============================
+INSERT INTO customer (first_name, last_name, email, phone) VALUES 
+  ('Alice', 'Johnson', 'alice@example.com', '555-1234'),
+  ('Bob', 'Smith', 'bob@example.com', '555-5678');
+
+INSERT INTO address (street, city, state, postal_code, country_id) VALUES 
+  ('123 Maple St', 'New York', 'NY', '10001', 1),
+  ('456 Oak Ave', 'Toronto', 'ON', 'M5H 2N2', 2),
+  ('789 Pine Rd', 'London', '', 'SW1A 1AA', 3);
+
+INSERT INTO customer_address (customer_id, address_id, status_id) VALUES 
+  (1, 1, 1),
+  (1, 2, 2),
+  (2, 3, 1);
+
+-- ===============================
+-- Orders
+-- ===============================
+INSERT INTO cust_order (customer_id, order_date, shipping_method_id, status_id) VALUES 
+  (1, NOW(), 1, 1),
+  (2, NOW(), 2, 2);
+
+INSERT INTO order_line (order_id, book_id, quantity, price_at_order) VALUES 
+  (1, 1, 2, 15.99),
+  (2, 2, 1, 29.99);
+
+INSERT INTO order_history (order_id, status_id, changed_at) VALUES 
+  (1, 1, NOW()),
+  (2, 2, NOW());
+
+-- 1. List all books with their authors, language, and publisher
+SELECT 
+  b.title,
+  CONCAT(a.first_name, ' ', a.last_name) AS author,
+  bl.language_name,
+  p.name AS publisher,
+  b.price
+FROM book b
+JOIN book_author ba ON b.book_id = ba.book_id
+JOIN author a ON ba.author_id = a.author_id
+JOIN book_language bl ON b.language_id = bl.language_id
+JOIN publisher p ON b.publisher_id = p.publisher_id;
+
+-- 2. Get recent customer orders with shipping method and status
+SELECT 
+  o.order_id,
+  CONCAT(c.first_name, ' ', c.last_name) AS customer,
+  o.order_date,
+  sm.method_name AS shipping_method,
+  os.status_name AS order_status
+FROM cust_order o
+JOIN customer c ON o.customer_id = c.customer_id
+JOIN shipping_method sm ON o.shipping_method_id = sm.shipping_method_id
+JOIN order_status os ON o.status_id = os.status_id
+ORDER BY o.order_date DESC;
+
+-- 3. Top 5 Best-Selling Books by Quantity Ordered
+SELECT 
+  b.title,
+  SUM(ol.quantity) AS total_sold
+FROM order_line ol
+JOIN book b ON ol.book_id = b.book_id
+GROUP BY b.book_id
+ORDER BY total_sold DESC
+LIMIT 5;
+
+-- 4. Total Sales Revenue by Book
+SELECT 
+  b.title,
+  SUM(ol.quantity * ol.price_at_order) AS revenue
+FROM order_line ol
+JOIN book b ON ol.book_id = b.book_id
+GROUP BY b.book_id
+ORDER BY revenue DESC;
+
+-- 5. Customers and Their Current Addresses
+SELECT 
+  CONCAT(c.first_name, ' ', c.last_name) AS customer,
+  a.street, a.city, a.state, a.postal_code
+FROM customer c
+JOIN customer_address ca ON c.customer_id = ca.customer_id
+JOIN address a ON ca.address_id = a.address_id
+JOIN address_status ast ON ca.status_id = ast.status_id
+WHERE ast.status_name = 'current';
+
+-- 6. Monthly Order Count and Revenue
+SELECT 
+  DATE_FORMAT(order_date, '%Y-%m') AS month,
+  COUNT(*) AS order_count,
+  SUM(ol.quantity * ol.price_at_order) AS total_revenue
+FROM cust_order o
+JOIN order_line ol ON o.order_id = ol.order_id
+GROUP BY month
+ORDER BY month DESC;
+
+
 
 -- ===================================
 -- Create Users
