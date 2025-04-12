@@ -1,0 +1,118 @@
+
+<mxfile host="app.diagrams.net">
+  <diagram name="Bookstore ERD" id="bookstore-erd">
+    <mxGraphModel dx="1232" dy="688" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Book -->
+        <mxCell id="book" value="book
+book_id (PK)
+title
+publisher_id (FK)
+language_id (FK)
+isbn
+price
+stock_quantity" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="60" width="180" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- Author -->
+        <mxCell id="author" value="author
+author_id (PK)
+first_name
+last_name
+bio" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="60" width="180" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- book_author -->
+        <mxCell id="book_author" value="book_author
+book_id (PK, FK)
+author_id (PK, FK)" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="220" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Customer -->
+        <mxCell id="customer" value="customer
+customer_id (PK)
+first_name
+last_name
+email
+phone" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="340" width="180" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- cust_order -->
+        <mxCell id="cust_order" value="cust_order
+order_id (PK)
+customer_id (FK)
+order_date
+shipping_method_id (FK)
+status_id (FK)" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="340" width="180" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- order_line -->
+        <mxCell id="order_line" value="order_line
+order_line_id (PK)
+order_id (FK)
+book_id (FK)
+quantity
+price_at_order" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="340" width="180" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- address -->
+        <mxCell id="address" value="address
+address_id (PK)
+street
+city
+state
+postal_code
+country_id (FK)" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="500" width="180" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- customer_address -->
+        <mxCell id="customer_address" value="customer_address
+customer_id (PK, FK)
+address_id (PK, FK)
+status_id (FK)" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="500" width="180" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- publisher -->
+        <mxCell id="publisher" value="publisher
+publisher_id (PK)
+name
+contact_email" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="60" width="180" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- book_language -->
+        <mxCell id="book_language" value="book_language
+language_id (PK)
+language_name" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="200" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- order_status -->
+        <mxCell id="order_status" value="order_status
+status_id (PK)
+status_name" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="500" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- shipping_method -->
+        <mxCell id="shipping_method" value="shipping_method
+shipping_method_id (PK)
+method_name
+cost" style="shape=swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="220" width="180" height="100" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
